@@ -7,29 +7,33 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      display: flex;
+      justify-content: center;
+      margin: 0;
       padding: 0;
       background-color: #f9f9f9;
+      min-height: 100vh;
     }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    form {
-      max-width: 400px;
-      margin: auto;
+    .container {
+      width: 400px; /* Larghezza fissa per evitare cambiamenti durante la visualizzazione dei risultati */
       padding: 20px;
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
     }
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
+      text-align: left;
     }
     input {
-      width: 100%;
+      width: calc(100% - 16px);
       padding: 8px;
       margin-bottom: 16px;
       border: 1px solid #ccc;
@@ -56,7 +60,8 @@
       border-radius: 4px;
       color: #27ae60;
       font-weight: bold;
-      text-align: center;
+      text-align: left;
+      min-height: 150px; /* Imposta un'altezza minima per evitare cambiamenti di layout */
     }
     .warning {
       color: #e74c3c;
@@ -65,22 +70,25 @@
       margin-top: 10px;
       color: #555;
       font-size: 0.9em;
+      text-align: left;
     }
   </style>
 </head>
 <body>
-  <h1>Calcolatore di Scale</h1>
-  <form id="scaleForm">
-    <label for="altezza">Altezza totale della scala (cm):</label>
-    <input type="number" id="altezza" placeholder="Es. 300" required>
+  <div class="container">
+    <h1>Calcolatore di Scale</h1>
+    <form id="scaleForm">
+      <label for="altezza">Altezza totale della scala (cm):</label>
+      <input type="number" id="altezza" placeholder="Es. 300" required>
 
-    <label for="gradini">Numero di gradini:</label>
-    <input type="number" id="gradini" placeholder="Es. 16" required>
+      <label for="gradini">Numero di gradini:</label>
+      <input type="number" id="gradini" placeholder="Es. 16" required>
 
-    <button type="button" onclick="calcolaScala()">Calcola</button>
-  </form>
+      <button type="button" onclick="calcolaScala()">Calcola</button>
+    </form>
 
-  <div id="result" class="result" style="display: none;"></div>
+    <div id="result" class="result" style="display: none;"></div>
+  </div>
 
   <script>
     function calcolaScala() {
