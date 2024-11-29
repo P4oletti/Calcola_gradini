@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calcolatore di Scale</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e9f7ef;
+      border: 1px solid #2ecc71;
+      border-radius: 4px;
+      color: #27ae60;
+      font-weight: bold;
+      text-align: center;
+    }
+    .warning {
+      color: #e74c3c;
+    }
+    .details {
+      margin-top: 10px;
+      color: #555;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calcolatore di Scale</h1>
+  <form id="scaleForm">
+    <label for="altezza">Altezza totale della scala (cm):</label>
+    <input type="number" id="altezza" placeholder="Es. 300" required>
+
+    <label for="gradini">Numero di gradini:</label>
+    <input type="number" id="gradini" placeholder="Es. 16" required>
+
+    <button type="button" onclick="calcolaScala()">Calcola</button>
+  </form>
+
+  <div id="result" class="result" style="display: none;"></div>
+
+  <script>
+    function calcolaScala() {
+      // Leggi i valori inseriti dall'utente
+      const altezzaTotale = parseFloat(document.getElementById('altezza').value);
+      const numeroGradini = parseInt(document.getElementById('gradini').value);
+
+      if (!altezzaTotale || !numeroGradini || altezzaTotale <= 0 || numeroGradini <= 0) {
+        alert('Per favore, inserisci valori validi.');
+        return;
+      }
+
+      // Calcola l'alzata e la pedata
+      const alzata = altezzaTotale / numeroGradini;
+      const pedata = 62 - (2 * alzata);
+
+      // Verifica se le proporzioni sono confortevoli
+      let comfort = '';
+      let dettagliComfort = '';
+      if (alzata >= 15 && alzata <= 20 && pedata >= 25 && pedata <= 30) {
+        comfort = 'Proporzioni confortevoli!';
+      } else {
+        comfort = '<span class="warning">Attenzione: proporzioni fuori dagli standard di comfort.</span>';
+        
+        if (alzata > 20) {
+          dettagliComfort += '<p>L\'alzata è troppo alta (> 20 cm), il che rende la scala difficile da percorrere e può risultare pericolosa, soprattutto per bambini e anziani. Si consiglia di aumentare il numero di gradini per ridurre l\'alzata.</p>';
+        }
+        if (alzata < 15) {
+          dettagliComfort += '<p>L\'alzata è troppo bassa (< 15 cm), il che potrebbe far risultare i gradini troppo bassi e scomodi da percorrere. Si consiglia di ridurre il numero di gradini per aumentare l\'alzata.</p>';
+        }
+        if (pedata < 25) {
+          dettagliComfort += '<p>La pedata è troppo stretta (< 25 cm), il che riduce lo spazio per appoggiare il piede, aumentando il rischio di inciampare. Si consiglia di ridurre l\'alzata per aumentare la profondità del gradino.</p>';
+        }
+        if (pedata > 30) {
+          dettagliComfort += '<p>La pedata è troppo profonda (> 30 cm), il che può rendere difficile il movimento naturale del passo. Si consiglia di aumentare leggermente l\'alzata per diminuire la pedata.</p>';
+        }
+      }
+
+      // Verifica se il numero di gradini è standard
+      let standardGradini = '';
+      if (alzata < 15) {
+        standardGradini = '<span class="warning">Il numero di gradini è troppo elevato per un’alzata confortevole. Considera di ridurre il numero di gradini.</span>';
+      } else if (alzata > 20) {
+        standardGradini = '<span class="warning">Il numero di gradini è troppo basso, e l’alzata risulterà molto ripida. Considera di aumentare il numero di gradini.</span>';
+      } else {
+        standardGradini = 'Il numero di gradini è adeguato per un comfort ottimale.';
+      }
+
+      // Calcola il numero ideale di gradini
+      const numeroMinGradini = Math.ceil(altezzaTotale / 20);
+      const numeroMaxGradini = Math.floor(altezzaTotale / 15);
+      const gradiniIdeali = `Numero ideale di gradini: tra ${numeroMinGradini} e ${numeroMaxGradini} per un comfort ottimale.`;
+
+      // Mostra il risultato
+      const resultDiv = document.getElementById('result');
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        <p>Alzata: <strong>${alzata.toFixed(2)} cm</strong></p>
+        <p>Pedata: <strong>${pedata.toFixed(2)} cm</strong></p>
+        <p>${comfort}</p>
+        <div class="details">${dettagliComfort}</div>
+        <p>${standardGradini}</p>
+        <div class="details"><p>${gradiniIdeali}</p></div>
+      `;
+    }
+
+    // Aggiungi l'evento "keypress" per il form per rilevare l'Invio
+    document.getElementById('scaleForm').addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Evita che il form venga inviato
+        calcolaScala(); // Chiama la funzione di calcolo
+      }
+    });
+  </script>
+</body>
+</html>
